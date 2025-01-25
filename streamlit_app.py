@@ -26,6 +26,9 @@ session=cnx.session();
 
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
 st.dataframe(data=my_dataframe, use_container_width=True)
+# Convert the Snowpark dataframe to Pandas dataframe so that we can use LOC function
+pd_df=my_dataframe.to_pandas()
+st.dataframe(pd_df)
 st.stop()
 # OR
 
@@ -40,15 +43,13 @@ if ingredients_list:
     for fruits_chosen in ingredients_list:
         ingredients_string += fruits_chosen + ' '
         # st.write(ingredients_string)
-        
+        search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
+        st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
         # st.text(smoothiefroot_response.json())
         smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruits_chosen)
         # st_df = st.dataframe(data=smoothiefroot_response.json(),use_container_width=True)
         
-        # Convert the Snowpart dataframe to Pandas dataframe so that we can use LOC function
-        pd_df=my_dataframe.to_pandas()
-        st.dataframe(pd_df)
-        st.stop()
+
         
     my_insert_stmt = """ insert into smoothies.public.orders(ingredients,name_on_order)
             values ('""" + ingredients_string + """','""" + name_on_order +  """')"""
