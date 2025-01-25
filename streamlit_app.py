@@ -43,7 +43,12 @@ if ingredients_list:
         
         # st.text(smoothiefroot_response.json())
         smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruits_chosen)
-        st_df = st.dataframe(data=smoothiefroot_response.json(),use_container_width=True)
+        # st_df = st.dataframe(data=smoothiefroot_response.json(),use_container_width=True)
+        
+        # Convert the Snowpart dataframe to Pandas dataframe so that we can use LOC function
+        pd_df=my_dataframe.to_pandas()
+        st.dataframe(pd_df)
+        st.stop()
         
     my_insert_stmt = """ insert into smoothies.public.orders(ingredients,name_on_order)
             values ('""" + ingredients_string + """','""" + name_on_order +  """')"""
