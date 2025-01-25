@@ -24,12 +24,7 @@ st.write("Name on yout smoothie will be: " , name_on_order)
 cnx=st.connection("snowflake");
 session=cnx.session();
 
-my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
-#st.dataframe(data=my_dataframe, use_container_width=True)
-# Convert the Snowpark dataframe to Pandas dataframe so that we can use LOC function
-pd_df=my_dataframe.to_pandas()
-st.dataframe(pd_df)
-# st.stop()
+
 # OR
 
 ingredients_list=st.multiselect("Choose upto 5 ingredients",my_dataframe, max_selections=5)
@@ -45,6 +40,15 @@ if ingredients_list:
         # st.write(ingredients_string)
         search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
         st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
+
+        my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
+        #st.dataframe(data=my_dataframe, use_container_width=True)
+        # Convert the Snowpark dataframe to Pandas dataframe so that we can use LOC function
+        pd_df=my_dataframe.to_pandas()
+        st.dataframe(pd_df)
+        # st.stop()
+
+
         # st.text(smoothiefroot_response.json())
         smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruits_chosen)
         # st_df = st.dataframe(data=smoothiefroot_response.json(),use_container_width=True)
